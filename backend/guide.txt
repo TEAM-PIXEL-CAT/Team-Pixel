@@ -1,0 +1,29 @@
+I) Пример .env:
+
+    DB_USER=postgres
+    DB_PASSWORD=password
+    DB_NAME=teampixel
+    DB_PORT=5432
+    DATABASE_URL="postgresql://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}"
+
+    ACCESS_JWT_SECRET="someValue"
+    REFRESH_JWT_SECRET="otherValue"
+
+
+II) Как создать бд? 
+
+    Docker хз правильный или нет, я локально postgres ебнул и похуй
+
+
+III) Как запустить? 
+
+    1) Сделать миграцию бд:
+    npx prisma migrate dev --name "init"
+
+    2) Запустить:
+    npm run start:dev
+
+    3) Swagger:
+    http://localhost:8000/api
+
+Вроде всё

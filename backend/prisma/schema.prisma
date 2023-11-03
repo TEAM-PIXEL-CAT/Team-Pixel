@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Skills {
+  id       Int              @id @default(autoincrement())
+  name     String           @unique
+  about    String           @default("")
+  image    String           @default("")
+  users    UsersSkills[]
+  projects ProjectsSkills[]
+}
+
+model Roles {
+  id    Int          @id @default(autoincrement())
+  name  String       @unique
+  users UsersRoles[]
+}
+
+model Users {
+  id           Int             @id @default(autoincrement())
+  email        String          @unique
+  username     String          @unique
+  fullname     String
+  phone        String
+  about        String          @default("")
+  education    String          @default("")
+  birthDate    DateTime
+  password     String
+  admin        Boolean         @default(false)
+  roles        UsersRoles[]
+  skills       UsersSkills[]
+  projects     UsersProjects[]
+  refreshToken String          @default("")
+}
+
+model Projects {
+  id      Int              @id @default(autoincrement())
+  name    String           @unique
+  about   String
+  content String           @db.Text
+  images  String[]         @default([])
+  skills  ProjectsSkills[]
+  users   UsersProjects[]
+  review  Reviews?
+}
+
+model Reviews {
+  id        Int      @id @default(autoincrement())
+  client    String
+  content   String
+  image     String   @default("")
+  projectId Int      @unique
+  project   Projects @relation(fields: [projectId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model UsersSkills {
+  user       Users    @relation(fields: [userId], references: [id])
+  userId     Int
+  skill      Skills   @relation(fields: [skillId], references: [id])
+  skillId    Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, skillId])
+}
+
+model ProjectsSkills {
+  project    Projects @relation(fields: [projectId], references: [id])
+  projectId  Int
+  skill      Skills   @relation(fields: [skillId], references: [id])
+  skillId    Int
+  assignedAt DateTime @default(now())
+
+  @@id([projectId, skillId])
+}
+
+model UsersRoles {
+  user       Users    @relation(fields: [userId], references: [id])
+  userId     Int
+  role       Roles    @relation(fields: [roleId], references: [id])
+  roleId     Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, roleId])
+}
+
+model UsersProjects {
+  user       Users    @relation(fields: [userId], references: [id])
+  userId     Int
+  project    Projects @relation(fields: [projectId], references: [id])
+  projectId  Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, projectId])
+}
